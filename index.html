@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>imgur</title>
+    <meta name="description" content="基于imgur的web图片托管页面">
+    <meta name="keywords" content="imgur,图床,免费图床,在线图床,图片托管,免费图片存储,图片上传网站,图片分享平台,图片存储服务,图片云存储,图片外链,快速图片上传,匿名图床服务,图片托管网站,图片存储工具,图片上传和存储服务,图片托管">
+
+</head>
+<style>
+    body,
+    html {
+        margin: 0;
+        padding: 0;
+    }
+
+    .forkicon {
+        position: fixed;
+        top: 0px;
+        right: 0px;
+        border: 0px;
+        width: 150px;
+        user-select: none;
+    }
+
+    .main {
+        padding-top: 60px;
+        min-height: 100vh;
+        box-sizing: border-box;
+        font-family: Avenir, Helvetica, Arial, sans-serif;
+    }
+
+    .upload-demo {
+        text-align: center;
+    }
+
+    .upload-demo .info {
+        display: inline-block;
+        text-align: center;
+        cursor: pointer;
+        outline: 0;
+    }
+
+    .upload {
+        background-color: #fff;
+        border: 1px dashed #d9d9d9;
+        border-radius: 6px;
+        box-sizing: border-box;
+        width: 360px;
+        height: 180px;
+        text-align: center;
+        position: relative;
+        overflow: hidden;
+    }
+
+    .upload.highlight {
+        background-color: rgba(32, 159, 255, .06);
+        border: 2px dashed #409eff;
+    }
+
+    .upload:hover {
+        border-color: #409eff;
+    }
+
+    .upinp {
+        display: none;
+    }
+
+    .upload-info .text {
+        color: #606266;
+        font-size: 14px;
+        text-align: center;
+    }
+
+    .upload-info .text em {
+        color: #409eff;
+        font-style: normal;
+    }
+
+    .upload-info .icon svg {
+        color: #c0c4cc;
+        margin: 40px 0 16px;
+        line-height: 50px;
+    }
+
+    .line {
+        display: block;
+        height: 1px;
+        width: 100%;
+        margin: 24px 0;
+        background-color: #dcdfe6;
+        position: relative;
+    }
+
+    .res-info {
+        text-align: center;
+    }
+
+    .res-link {
+        font-size: 20px;
+        padding-bottom: 20px
+    }
+
+    .footer {
+        position: fixed;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        text-align: center;
+        color: #c0c4cc;
+        font-size: 16px;
+    }
+
+    .footer span {
+        cursor: pointer;
+    }
+
+</style>
+
+<body>
+    <img class="forkicon" src="https://cdn.jsdelivr.net/gh/WishMelz/file@master/messy/614b81962449bb3430193bdd6eaa3c7f.png" alt="">
+    <div class="main">
+        <div class="footer">
+            <span><a style="color:#606266;" href="https://github.com/WishMelz/imgur">基于 imgur 的web程序</a></span>
+            <!-- <span>|</span>
+            <span>历史记录</span> -->
+        </div>
+        <div class="upload-demo">
+            <div class="info">
+                <div class="upload">
+                    <div class="upload-info">
+                        <div class="icon">
+                            <svg t="1692252618256" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="18739" width="60" height="60">
+                                <path d="M768.114773 384c0-140.8-115.2-256-256-256S256.114773 243.2 256.114773 384c-145.066667 0-260.266667 119.466667-256 264.533333 4.266667 140.8 128 247.466667 268.8 247.466667H384.114773c25.6 0 42.666667-17.066667 42.666667-42.666667v-128H375.58144c-38.4 0-55.466667-46.933333-29.866667-72.533333l136.533334-136.533333c17.066667-17.066667 42.666667-17.066667 59.733333 0l136.533333 136.533333c25.6 25.6 8.533333 72.533333-29.866666 72.533333H597.448107v128c0 25.6 17.066667 42.666667 42.666666 42.666667h115.2c140.8 0 264.533333-106.666667 264.533334-247.466667 8.533333-145.066667-106.666667-264.533333-251.733334-264.533333z" p-id="18740" fill="#c0c4cc"></path>
+                            </svg>
+                        </div>
+                        <div class="text">将文件拖到此处，或 <em>点击上传</em> </div>
+                        <div class="text"><b>支持 ctrl + v 上传</b></div>
+                    </div>
+                    <input type="file" class="upinp" name="file" multiple>
+                </div>
+            </div>
+        </div>
+        <div class="line"></div>
+        <div class="resmain">
+            <div class="res-info">
+                <div class="res-link">
+                    <b id="resurl">https://i.imgur.com/nGI3Js1.png</b>
+                </div>
+                <div class="res-img">
+                    <img id="resimg" src="https://i.imgur.com/nGI3Js1.png" alt="">
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+<script>
+    /** 
+     * imgur 上传图片的 clientId
+     * 注册应用：https://api.imgur.com/oauth2/addclient
+     * 查看已注册：https://imgur.com/account/settings/apps
+    */
+    const clientId = 'b2e5734394755e0'
+    let uploadInp = document.querySelector('.upinp')
+    let dropzone = document.querySelector('.upload')
+    // 阻止默认的拖放行为
+    dropzone.addEventListener('dragover', function (e) {
+        e.preventDefault()
+        dropzone.classList.add('highlight')
+    })
+    // 拖放结束时移除高亮样式
+    dropzone.addEventListener('dragleave', function (e) {
+        dropzone.classList.remove('highlight')
+    })
+    // 处理拖放事件
+    dropzone.addEventListener('drop', function (e) {
+        e.preventDefault()
+        dropzone.classList.remove('highlight')
+        var files = e.dataTransfer.files
+        handleImage(files)
+    })
+
+    uploadInp.addEventListener('change', function (e) {
+        var file = e.target.files
+        handleImage(file)
+    })
+
+    document.querySelector('.upload').onclick = function () {
+        uploadInp.click()
+    }
+    async function handleImage(file) {
+        console.log(file)
+        let fileOne = file[0]
+        const formData = new FormData()
+        formData.append('image', fileOne)
+
+        const res = await fetch('https://api.imgur.com/3/upload', {
+            method: 'POST',
+            headers: { Authorization: `Client-ID ${clientId}` },
+            body: formData,
+        })
+        if (res.ok) {
+            const resData = await res.json()
+            if (resData.success) {
+                setHistory(resData.data.link)
+            }
+        }
+    }
+
+    function setHistory(url) {
+        document.querySelector('#resurl').innerHTML = url;
+        document.querySelector('#resimg').src = url;
+        let urlList = localStorage.getItem('historyList')
+        if (urlList) {
+            urlList = JSON.parse(urlList)
+        } else {
+            urlList = []
+        }
+        urlList.push({
+            url,
+            timer: Date.now()
+        })
+        localStorage.setItem('historyList', JSON.stringify(urlList))
+    }
+</script>
+
+</html>
