@@ -4,7 +4,7 @@
 ## 配置 `ClientID`
 在 `https://api.imgur.com/oauth2/addclient` 注册 `clientId`
 
-![img]('./image/getlientid.png')
+![img](./image/getlientid.png)
 
 
 ```
