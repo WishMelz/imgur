@@ -1,5 +1,5 @@
 # imgur
-基于imgur的web图片托管页面，即开即用
+基于 **imgur** 的web图片托管页面，即开即用
 
 ## 配置 `ClientID`
 在 `https://api.imgur.com/oauth2/addclient` 注册 `clientId`
